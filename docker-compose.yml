@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  java_app:
+    container_name: java_app
+    image: patitas-java-app_1.0.0
+    build: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - java_db
+  java_db:
+    container_name: java_db
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_MULTIPLE_DATABASES=patitas,postgres
+    ports:
+      - '54322:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  db:
+    driver: local
